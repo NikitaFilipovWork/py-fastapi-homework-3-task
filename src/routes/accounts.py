@@ -53,7 +53,7 @@ async def register(
 
     try:
         return await create_user(db, user)
-    except (SQLAlchemyError, ValueError):
+    except Exception:
         await db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
