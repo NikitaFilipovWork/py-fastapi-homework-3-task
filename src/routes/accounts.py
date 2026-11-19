@@ -32,7 +32,6 @@ from security.token_manager import JWTAuthManager
 
 router = APIRouter()
 
-
 @router.post(
     "/register/",
     response_model=UserRegistrationResponseSchema,
@@ -83,7 +82,6 @@ async def activate(
     await activate_user(db, user)
 
     return {"message": "User account activated successfully."}
-
 
 @router.post("/password-reset/request/", response_model=MessageResponseSchema)
 async def request_password_reset(

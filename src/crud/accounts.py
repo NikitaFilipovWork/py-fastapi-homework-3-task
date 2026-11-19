@@ -3,6 +3,7 @@ from datetime import timedelta, datetime, timezone
 from secrets import compare_digest
 
 from fastapi import HTTPException, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
 from config import get_jwt_auth_manager
@@ -33,7 +34,6 @@ async def get_user_group_id(db: AsyncSession) -> int | None:
     )
     return result.scalar_one_or_none()
 
-
 async def create_user(db: AsyncSession, user: UserRegistrationRequestSchema):
     group_id = await get_user_group_id(db=db)
     if group_id is None:
@@ -46,7 +46,6 @@ async def create_user(db: AsyncSession, user: UserRegistrationRequestSchema):
     await db.commit()
     await db.refresh(db_user)
     return db_user
-
 
 async def get_user_by_email(db: AsyncSession, email: str):
     result = await db.execute(
@@ -97,8 +96,8 @@ async def activate_user(db: AsyncSession, data: UserActivationRequestSchema):
 
 
 async def set_reset_token(
-    db: AsyncSession,
-    data: PasswordResetRequestSchema,
+         db: AsyncSession,
+         data: PasswordResetRequestSchema,
 ) -> None:
     db_user = await get_user_by_email(db=db, email=data.email.lower())
     if db_user is None or not db_user.is_active:
@@ -146,7 +145,6 @@ async def reset_password(
         )
 
     return db_user
-
 
 async def user_login(
         db: AsyncSession,
